@@ -1,2 +1,0 @@
-# Devops
-Required Information
