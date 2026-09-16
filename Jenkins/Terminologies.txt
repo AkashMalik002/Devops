@@ -1,0 +1,85 @@
+CI/CD => Continuous Integration/ Continuous Delivery
+
+Item/Project Type => Freestyle, Pipeline
+
+=> Souce Coce Management -> Git (For git url declaration and branch specification if want to)
+=> Build Setup(in Freestyle) -> Add Build Setup -> Excute Shell ( uptime, whoami)
+
+-> Build Periodically(Build after specific time{Cron Job} Irrespective of change) & Poll SCM(Build after specific time{Cron Job} If there is change in repo)
+-> Cron Job (***** => Minutes Hours Days Months Days_of_Week)
+-> Git Poll Log
+
+-> Webhook in Github 
+	{Jenkin->Job->Trigger->Github hook trigger for GIT SCM polling}
+	{Git->Repo->Settings->Webhook->Add Webhook=> IP:8080/github-webhook/; application/json}
+	(If some change/commit in github repo webhook notify Jenkins)
+
+-> Plugin (helps in code builds and run like MAVEN)
+	{{ Jenkins-> Settings-> Tools-> Maven Installation-> Add Maven(name-> abcmaven; version---), We can multiple version in single maven also }
+	 {Job-> Build Steps-> maven version-> abcmaven; Goal-> package}; workspace -> Codereview-> target_. pmd.xml}
+	------------------------
+	{Settings-> Plugins-> Available Plugins-> Warning-> Install}
+-> 
+
+-> Job -> Build Steps-> Post Build Action-> Record-> complie Static analysist... -> PMD [**/pmd.xml]  => to get graphical analysis of output
+--==========================================================================================================--
+Pipeline => Set of task execution one after another.
+pipeline code -> groovy based
+
+Declarative Pipeline fundamentals
+---------------------------------
+pipeline {
+    agent any
+	
+    tools {
+	//maven 'abcmaven'
+    }
+    parameters {
+        string(name: 'tool', defaultValue: 'Mr Jenkins', description: 'ToolName')
+
+        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+
+        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+
+        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+
+        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+    }
+    stages {
+        stage('Build') {
+            steps {
+                //
+            }
+        }
+        stage('Test') {
+            steps {
+                //
+            }
+        }
+        stage('DEV') {
+	    when {
+                expression { params.ENV == 'DEV' }
+            }
+            steps {
+                //	
+            }
+        }
+	stage('Example') {
+            steps {
+                echo "Hello ${params.tool}"
+
+                echo "Biography: ${params.BIOGRAPHY}"
+
+                echo "Toggle: ${params.TOGGLE}"
+
+                echo "Choice: ${params.CHOICE}"
+
+                echo "Password: ${params.PASSWORD}"
+            }
+        }
+    }
+}
+----------------------------------------------------
+
+--==========================================================================================================--
+--==========================================================================================================--
