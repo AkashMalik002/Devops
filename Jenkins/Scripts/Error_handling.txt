@@ -1,0 +1,91 @@
+--============================================================================--
+--============================================================================--
+Error Handling
+---------------
+pipeline{
+
+	agent any
+
+	tools{
+	  maven 'mymaven'
+	}
+
+	stages{
+	    stage('Clone the repo')
+	    {
+		    steps{
+		      git 'https://github.com/Sonal0409/DevOpsCodeDemo.git'
+		    }
+	  }
+	    stage('Review Code'){
+		steps {
+			catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+				retry(3):{
+					sh 'mvn pmd:pmd'
+					//
+					//
+				}
+			}
+		      }
+		}
+	}
+	   stage(Test Code'){
+		steps {
+			catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+				retry(3):{
+					sh 'mvn test'
+					//
+					//
+				}
+			}
+		      }
+		}
+		stage('Build & Deploy Code')
+  		{
+    		steps{
+      			echo "Build & Deploy the code"
+    		}
+  	}
+
+
+------------------------------------
+Error Handling + Try and catch block+Variables + Retry and wait time
+------------------------------------
+pipeline{
+	agent any
+
+	tools{
+		maven 'mymaven'
+	}
+
+	stages{
+		stage('test Code'){
+			steps{
+        				script{   // groovy script
+                  				// declare 3 variables which will store number value
+        					int  maxRetries = 3   // int = integer = data type store in variable maxRetries 
+        					int retries = 0  
+        					boolean success = false
+
+						// we are using a keyword called as while which is representing a loop
+		      				while(retries<maxRetries && !success){
+          					try{
+                 					sh 'mvn tst'  // risk code that will fail
+                 					success = true // if execution of line 58 is successful then exit the loop
+          					}
+          					catch(Exception e){
+                				retries++  // increment the value of retries by 1
+                				echo "Attempt ${retries} failed. Retrying.."  
+                				sleep(10)  // wait for 10 seconds before retrying
+          					} 
+      					}  
+      					if(!success)  // execution of the steps have failed 
+      					{
+      						error("All attempts have failed")
+      					}
+        			}
+			}
+		}
+
+	}
+}
