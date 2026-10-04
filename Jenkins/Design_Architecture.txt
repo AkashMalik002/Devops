@@ -1,0 +1,65 @@
+--==============================================================================================--
+Jenkins Architecture Notes
+----------------------------------------------
+1. What is Jenkins?
+=> Jenkins is an open-source automation server for CI/CD. It is written in Java and runs as a web app (default port 8080). Its functionality comes from plugins.
+----------------------------------------------
+2. High-Level Architecture
+=>
+                    ┌──────────────────────────┐
+   Developer ──────▶│Source Control(Git/Gitlab)│
+                    └────────────┬─────────────┘
+                                 │ Webhook / Poll SCM
+                                 ▼
+                    ┌──────────────────────────┐
+   User (UI/CLI/API)▶│     JENKINS CONTROLLER   │
+                    │  (Master / Built-in node)│
+                    │  - Web UI, REST API      │
+                    │  - Job config, Scheduler │
+                    │  - Plugins, Credentials  │
+                    │  - JENKINS_HOME          │
+                    └────────────┬─────────────┘
+                                 │ JNLP (inbound) / SSH (outbound)
+              ┌──────────────────┼──────────────────┐
+              ▼                  ▼                  ▼
+        ┌──────────┐       ┌──────────┐       ┌──────────┐
+        │ Agent 1  │       │ Agent 2  │       │ Agent N  │
+        │ (Linux)  │       │(Windows) │       │ (Docker/ │
+        │ Executors│       │ Executors│       │  K8s pod)│
+        └──────────┘       └──────────┘       └──────────┘
+------------------------------------------------------------------------
+3. Core Components
+Controller (Master), 
+Agent (Node/Slave),
+Executor,
+Job / Project, 
+Build,
+Workspace,
+Plugins,
+JENKINS_HOME
+------------------------------------------------------------------------
+4. Controller–Agent Communication
+SSH (outbound): the controller connects to the agent. Common for Linux.
+Inbound (JNLP/WebSocket): the agent connects to the controller. Useful behind firewalls and for Windows.
+Cloud/Dynamic agents: Docker, Kubernetes, or EC2 plugins spin up agents on demand and destroy them after the build.
+------------------------------------------------------------------------
+5. JENKINS_HOME Structure
+JENKINS_HOME/
+├── config.xml          # Global config
+├── jobs/               # Job configs and build history
+├── nodes/              # Agent definitions
+├── plugins/            # Installed plugins
+├── secrets/            # Encryption keys
+├── users/              # User data
+└── workspace/          # Build workspaces (on controller)
+
+Back up this directory to protect your Jenkins setup.
+
+------------------------------------------------------------------------
+6. Pipeline Architecture
+Jenkinsfile: pipeline-as-code stored in the repo.
+Declarative: structured syntax (pipeline { agent, stages, steps }).
+Scripted: Groovy-based and more flexible.
+Flow: Checkout → Build → Test → Package → Deploy.
+Shared Libraries: reusable Groovy code shared across pipelines.
+--==============================================================================================--
