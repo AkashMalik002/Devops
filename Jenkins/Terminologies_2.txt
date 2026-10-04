@@ -1,0 +1,141 @@
+--==================================================--
+Topics :- 
+----------------------------------------------
+| 1. Jenkins Pickup code directly from github |
+| 2. Master & Agent Setup                     | 
+| 3. Variables in Jenkins                     |
+| 4. MultiBranch Pipeline                     |
+----------------------------------------------
+--==================================================--
+Jenkins Pickup code directly from github (without write a code))
+---------------------------
+Jenkins -> New Demo -> Jenkinsfile-Demo
+OK
+Job-Configure -> Pipeline -> Defination (Pipeline script from SCM)
+	-> SCM -> GIT
+	-> URL -> GIT URL(Repo)
+	-> Branch
+	->Script Path - filename
+	------
+	|Save|
+	------
+	|Build|
+	------
+--==================================================--
+Master & Agent Setup
+2 Approaches -> With docker & Direct
+---------------------------
+Approach 1-> With Docker (Pending) **
+---------------------------
+Approach 2-> Direct **
+VM(orEC2) 1 it is already done (Refer Installatioon document).
+Another EC2 -> 
+Installation commands:-
+----------------------------
+| sudo su -
+| apt update && apt install openjdk-21-jre-headless
+| cd /tmp
+| mkdir jenkinsdir
+| pwd
+| chmod -R 777 /tmp/jenkinsdr
+----------------------------
+VM1 => 
+
+(pending)
+--==================================================--
+Variables in Jenkins =>
+3 types => Parameter block, Envirnoment variable, via groovy script
+1) Parameter block ->
+	parameter{
+		string (NAME = ENV)
+	}
+2) Environment variable
+	environment{
+		branch = 'DEV'
+	}
+3) Groovy Script
+	stages(){
+		steps{
+			def branch = "DEV"
+		}
+	}
+Examples =>
+
+----------------------------
+pipeline {
+    agent any
+
+    // 1. PARAMETER BLOCK - user supplies values when triggering the build
+    parameters {
+        string(name: 'APP_NAME', defaultValue: 'my-app', description: 'Application name')
+        choice(name: 'DEPLOY_ENV', choices: ['dev', 'qa', 'prod'], description: 'Target environment')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run tests?')
+    }
+
+    // 2. ENVIRONMENT BLOCK - variables available to all stages
+    environment {
+        APP_VERSION = '1.0.0'
+        BUILD_TAG_NAME = "${params.APP_NAME}-${APP_VERSION}"   // can combine with parameters
+    }
+
+    stages {
+
+        stage('Show Parameters & Environment Variables') {
+            steps {
+                echo "App Name     : ${params.APP_NAME}"        // parameter
+                echo "Deploy Env   : ${params.DEPLOY_ENV}"      // parameter
+                echo "Run Tests    : ${params.RUN_TESTS}"       // parameter
+                echo "App Version  : ${env.APP_VERSION}"        // environment variable
+                echo "Build Tag    : ${env.BUILD_TAG_NAME}"     // environment variable
+                echo "Build Number : ${env.BUILD_NUMBER}"       // built-in Jenkins variable
+            }
+        }
+
+        // 3. GROOVY SCRIPT - define and use variables inside a script block
+        stage('Groovy Script Variables') {
+            steps {
+                script {
+                    // Local Groovy variables
+                    def buildMessage = "Deploying ${params.APP_NAME} to ${params.DEPLOY_ENV}"
+                    def retryCount = 3
+
+                    echo buildMessage
+                    echo "Retry count: ${retryCount}"
+
+                    // Set a new environment variable dynamically from Groovy
+                    env.DEPLOY_TIME = new Date().format('yyyy-MM-dd HH:mm:ss')
+
+                    // Conditional logic using variables
+                    if (params.DEPLOY_ENV == 'prod') {
+                        echo "WARNING: Production deployment!"
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            steps {
+                echo "Running tests for ${params.APP_NAME}..."
+            }
+        }
+
+        stage('Use Dynamic Variable') {
+            steps {
+                // env.DEPLOY_TIME was set in the Groovy script stage above
+                echo "Deployed at: ${env.DEPLOY_TIME}"
+                sh 'echo "Shell can read env vars too: $APP_VERSION"'
+            }
+        }
+    }
+}
+--==================================================--
+MultiBranch Pipeline
+------------------------
+Github - MultiBranch Demo -> Dev, QA, release, staging, Prod
+
+Pending ****
+--==================================================--
+

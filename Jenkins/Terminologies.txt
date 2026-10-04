@@ -1,5 +1,6 @@
 CI/CD => Continuous Integration/ Continuous Delivery
 
+-> Scripts are of groovy type in Jenkins
 Item/Project Type => Freestyle, Pipeline
 
 => Souce Coce Management -> Git (For git url declaration and branch specification if want to)
