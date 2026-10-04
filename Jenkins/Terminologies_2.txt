@@ -39,8 +39,12 @@ Installation commands:-
 | pwd
 | chmod -R 777 /tmp/jenkinsdr
 ----------------------------
-VM1 => 
-
+VM1 => login Jenkinis  UI(Port 8080)
+	-> UI -> Jenkins -> Settings -> Nodes -> [[ New Node ]]
+	---------------------
+	| Name:- linux-node |
+	| [[Create]]	    |
+..........
 (pending)
 --==================================================--
 Variables in Jenkins =>
@@ -134,8 +138,28 @@ pipeline {
 --==================================================--
 MultiBranch Pipeline
 ------------------------
-Github - MultiBranch Demo -> Dev, QA, release, staging, Prod
+Github - MultiBranch Demo -> Dev, QA, release, staging, Prod  ****
 
-Pending ****
+=> Jenkins -> Create a Job
+	 --------------------------------------
+	| Name :- MultiBranch-Demo             |
+	| Pipeline :- MultiBranch Pipeline     |
+	| |OK|		                       |
+	 --------------------------------------
+	-> General -> MultiBranch-Demo
+	-> Branch Source 
+		----------------------------------------------------------
+		| Add Source - Git/Gitlab
+		| Repositories 
+		| Behaviour :- Discover Branches
+		| Mode -> by Jenkinsfile -> Scriptfile (Means Jeankinsfile)
+		 ----------------------------------------------------------
+	-> Scan MultiBranch Pipeline Triggers
+		-> [Yes] Periodically if not otherwise run
+	-> Orphaned Item Strategy	([] Discard old item)
+	-------
+	[ Save]
+
+Practise required
 --==================================================--
 

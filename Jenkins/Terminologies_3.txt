@@ -1,0 +1,11 @@
+--=====================================================--
+Topics :- 
+ -------------------------------------------------
+| 1. Jenkins Integration with Slack 		  |
+| 2. Jenkins Integration with SonarQube           | 
+| 3. Backup of Jenkins Server for High Avalability|
+ -------------------------------------------------
+--==================================================--
+1) Jenkins Integration with Slack (Slack is similar like team)
+
+--=====================================================--
