@@ -7,5 +7,69 @@ Topics :-
  -------------------------------------------------
 --==================================================--
 1) Jenkins Integration with Slack (Slack is similar like team)
+ For slack setup and jenkins connection refer a different document.
+
+Pipeline :- 
+pipeline{
+    
+    agent any
+    
+    tools{
+        maven 'mymaven'
+    }
+    
+    stages{
+        
+        stage('slackNotiifaction')
+        {
+            steps{
+                git 'https://github.com/Sonal0409/DevOpsCodeDemo.git'
+                sh 'mvn test'
+            }
+            post{
+                success{
+                    slackSend channel: 'jenkins-demo', message: 'Pipeline job executed successfully'
+                }
+                failure{
+                    slackSend channel: 'jenkins-demo', message: 'Pipeline job Failed..'
+                }
+            }
+        }
+    }
+}
+******************************
+pipeline{
+    agent any
+    tools{
+        maven 'mymaven'
+    }
+    stages{
+        stage('Send notification'){
+            steps{
+                 slackSend channel: 'slack-jenkins-channel', message: "The  '${env.JOB_NAME}' job to test the code has started"
+            }
+        }
+        stage('Test repo')
+        {
+            steps{
+            git 'https://github.com/Sonal0409/DevOpsCodeDemo.git'
+            sh 'mvn test'
+             slackSend channel: 'slack-jenkins-channel', message: 'The testcase execution completed'
+            }
+            post{
+                always{
+                    slackSend channel: 'slack-jenkins-channel', message: "The '${env.JOB_NAME}' execution completed"
+                }
+                success{
+                    slackSend channel: 'slack-jenkins-channel', message: "The '${env.JOB_NAME}' execution completed and is Successfull"
+                }
+                failure{
+                    slackSend channel: 'slack-jenkins-channel', message: "The '${env.JOB_NAME}' execution completed and it has failed"
+                }
+            }
+        }
+    }
+}
+---------------------------------------------------------------------------
 
 --=====================================================--
