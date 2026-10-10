@@ -1,0 +1,12 @@
+--===============================================================================================--
+--===============================================================================================--
+Github Actions =>
+-> Open source tool
+-> Present with Github
+-> This is CI/CD tool - CICD workflow can be created.
+-> Do not required to create any user -> Github user is sufficient.
+-> No plugin to be installed.
+-> We created workflow written in YAML
+-> We have runners(VM) provided by github to run CICD code.
+-> Runners are temporary dynamic agent.
+-> 
