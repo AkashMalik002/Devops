@@ -1,3 +1,6 @@
 Demo YAML to understand basics of git actions
 ----------------------------------------
 1) 
+
+
+Difference b/w workflow_dispatch and psu in "on"
