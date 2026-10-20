@@ -67,9 +67,9 @@ RUN v/s EXEC
 -> docker exec -it web2 /bin/bash
 	| cd /usr/share/nginx/html
 	| ls
-	| exho "Welcome to the page" > index.html
-	|
-	|
+	| cat index.html
+	| echo "Welcome to the page" > index.html	// If want to edit can also use( cat > index.html) // vi file1 => this will not work here
+	| 
 	| exit
 -> docker run -d --name=web3 -p nginx	// Randomly provide the port number by docker
 -> docker images 
