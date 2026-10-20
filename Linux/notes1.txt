@@ -1,0 +1,59 @@
+--====================================================================--
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+Here we mainly focus on commands
+----------------------------------
+-> ls
+-> ls -l
+-> pwd
+-> touch file1	// create a file with filename => file1
+-> vi file1	// Edit the file, if the file not present then create the file and edit
+-> cp file1 file2	// copy from file1 to file2
+-> cat file1		// Read file1
+-> ls 
+-> ls -l
+-> ls -lt
+-> ls -lrt
+-> date
+-> mkdir folder1 folder2	//  Create folder(s) with name(s) folder1, folder2
+-> df -h			// To check space
+-> cd parhA			// 
+-> cp folder1/file1.txt folder2/filez	// Copy the file file1.txt from folder1 to filez inside folder2
+-> cp * folder1/ folder2/		//copies all visible files from the current working directory into folder1/
+****************************
+Note:- We can't undo copy paste task in Linux
+****************************
+Savelogs
+
+-> mv logfile2 ../folder10/	// Moves a file named logfile2 from your current directory into a directory named folder10, which is located one level up in the folder hierarchy.
+-> rm file1 			// Removes file named file1 in your current directory
+-> rm file*			// Removes all files in the current directory whose names begin with "file"
+-> rm *				// Removes all files in your current directory. It will skip any folders unless you add the -r flag.
+-> rm -r folder1		// Removes the directory named folder1 and everything inside it. The -r (recursive) flag is required to delete folders.
+-> rm -r *			// deletes every file and folder inside your current working directory.
+-> rm -rf *			// This command forcefully (-f) and recursively (-r) deletes every single file and folder inside your current working directory. ** DOn't run this until not sure.
+************************************************************************************************************
+
+-> vi science.txt
+-> cat science.txt
+-> head -2 science.txt		// Outputs only the first 2 lines of the science.txt file.
+-> head -3 file1		// Outputs the first 3 lines of a different file named file1.
+-> tail -3 file1		// Outputs the last 3 lines of file1.
+-------------------------------------------------------------------------------
+-> cat file1 | grep water		// Displays all lines from file1 that contain the exact, case-sensitive word "water".
+-> cat file1 | grep -i water		// Displays all lines containing "water", but ignores the case (due to the -i flag).
+-> cat file1 | grep forest		// Filters and displays all lines from file1 that contain the exact, case-sensitive word "forest".
+-> cat file1 | grep forest | wc -c	// Counts and outputs the total number of bytes (characters) in all the lines that matched "forest".
+-> cat file1 | grep forest | wc -l	// Counts and outputs the total number of lines that contain the word "forest".
+Notes:- We can also use this directly => 
+	:- grep -c "forest" file1
+
+-------------------------------------------------------------------------------
+-> df -h 
+-> df -h > disk_output.txt
+-> cat disk_output.txt science.txt > biglist.txt
+-> cat biglist.txt
+-> ls -lrt
+
+-------------------------------------------------------------------------------
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+--====================================================================--
