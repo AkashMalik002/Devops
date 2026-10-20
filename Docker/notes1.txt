@@ -1,0 +1,103 @@
+--====================================================================--
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+----------------------------
+----------------------------
+Docker v/s Virtual Machine
+
+----------------------------
+----------------------------
+Commands :- 
+-> docker pull nginx
+-> docker run ubuntu
+-> docker images
+-> docker ps 
+-> docker ps -a
+----------------------------
+----------------------------
+Image v/s Container
+-> Image(s) is like an actual raw materail(Ex:- Mango).
+-> Container is like final Product. Ultimate byproduct of raw material(Ex:- Mango Juice).
+----------------------------
+----------------------------
+PUll v/s RUN
+-> docker pull only download the image no container created.
+-> docker run will download the image(if not downloaded) and then create the container as well.
+----------------------------
+----------------------------
+
+-> docker run ubuntu
+-> docker run -it nginx
+-> docker rin -dit httpd
+-> docker run -itd httpd
+-> docker run -d httpd
+(-itd and -dit are same commands)
+----------------------------
+----------------------------
+2 types of modes in container
+1) FOREGROUND MODE (-it) => Only for Testing
+i -> interactive mode, t -> terminal mode
+=> It will keep running one container until 
+root user will be attached to the terminal of the container.
+
+2) Detach Mode (-d) => For Production
+=>  Container will created, container will running,  root user will NOT be attached to the container.
+----------------------------
+----------------------------
+
+-> docker stop container_ID
+-> docker stop ID1 ID2 ID3
+-> docker run --name=myweb -d nginx
+-> docker run --name=cont1 -d ubuntu
+-> docker exec -t cont1 /bin/bash
+	|
+	|
+	|
+	|
+	| exit
+-> docker attach cont1
+----------------------------
+----------------------------
+RUN v/s EXEC
+
+----------------------------
+----------------------------
+-> docker run --name=web -d nginx
+
+-> docker run -d --name=web2 -p 8880:80 nginx
+-> docker exec -it web2 /bin/bash
+	| cd /usr/share/nginx/html
+	| ls
+	| exho "Welcome to the page" > index.html
+	|
+	|
+	| exit
+-> docker run -d --name=web3 -p nginx	// Randomly provide the port number by docker
+-> docker images 
+-> docker ps -a
+-> docker run -dit --name=web4 -p 8081:80 nginx:latest
+-> docker run -dit --name=web5 -p 8082:80 nginx
+----------------------------
+----------------------------
+PORT MAPPING
+-> Used to access the service and add host port so we can access it from UI
+-> Some services default port number
+• Nginx: Port 80
+• Apache HTTP Server: Port 80
+• Jenkins: Port 8080
+• Apache Tomcat: Port 8080
+• Ubuntu: Port 22
+• SQL Server: 1433
+• MySQL: Port 3306
+• HTTPD: Port 80
+----------------------------
+----------------------------
+Revision =: 
+-> docker pull jenkins/jenkins:latest
+-> docker images
+-> docker ps 
+-> docker ps -a
+-> docker run -it nginx
+-> docker run -dit --name=jenkinweb jenkins/jenkins:latest
+-> docker run -dit --name=jenkinweb2 -p 8084:8080 jenkins:latest
+--====================================================================--
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--

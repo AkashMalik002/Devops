@@ -1,0 +1,29 @@
+--=================================================--
+--=================================================--
+Approach 1:- 
+-> apt update && apt install docker.io -y
+-> docker --version
+-> systemctl status docker
+-> docker ps -a
+-> docker images
+--**************************************************--
+Approach 2:-
+-> ls 
+-> pwd
+-> whoami
+-------------------
+-> sudo apt update
+-> sudo apt install docker.io
+-> systemctl status docker.service
+-> docker images	// permission denied
+-> cat /etc/group
+-> sudo usermod -aG docker $USER
+-> cat /etc/group
+-> sudo chmod 666 /ar/run/docker.sock
+-> docker images
+-------------------
+-> echo $USER
+-> echo $PWD
+-> pwd
+--=================================================--
+--=================================================--
