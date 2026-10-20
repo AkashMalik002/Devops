@@ -1,0 +1,32 @@
+--====================================================================--
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+
+-> docker images
+-> docker ps -a
+-> docker start ID1 ID2 ID3 ID4
+-> docker run -it nginx
+-> docker run -dit --name=jenkinweb jenkins/jenkins:latest
+-> docker run -dit --name=jenkinweb2 -p 8084:8080 jenkins:latest
+-> docker exec -it ContainerID /bin/bash
+	|
+	|
+	|
+	|
+	| exit
+-> docker restart nginx:latest	// we cannot restart the image, always prefer container
+-> docker rmi nginx:latest	// if containers are still using this image then we will get error on this
+// Best steps delete all the container related to this then delete the image
+
+-> docker rm -f mycont1
+-> docker rm -f $(docker ps -aq)	// to delete all the container
+----------------------------
+----------------------------
+VOLUME MOUNT in docker
+2 types 
+1) NAMED VOLUMES
+2) BIND MOUNT
+----------------------------
+----------------------------
+
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+--====================================================================--
