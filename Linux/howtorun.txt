@@ -1,0 +1,3 @@
+We can run through multiple steps now a days.
+1) Create a Local VM on your System(Oracle VM Virtual Box manager).
+2) Cloud Providers => Multiple cloud providers now a days to run VM.
