@@ -48,9 +48,9 @@ Notes:- We can also use this directly =>
 	:- grep -c "forest" file1
 
 -------------------------------------------------------------------------------
--> df -h 
--> df -h > disk_output.txt
--> cat disk_output.txt science.txt > biglist.txt
+-> df -h 						// Displays the available and used disk space on all currently mounted file systems. The -h flag makes the output human-readable
+-> df -h > disk_output.txt				// Runs the same disk space check, but instead of printing it to your screen, the > operator redirects the output into a new file named disk_output.txt
+-> cat disk_output.txt science.txt > biglist.txt	// command reads the contents of the files listed and merges them into one file biglist.txt
 -> cat biglist.txt
 -> ls -lrt
 
