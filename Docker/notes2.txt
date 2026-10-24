@@ -27,6 +27,58 @@ VOLUME MOUNT in docker
 2) BIND MOUNT
 ----------------------------
 ----------------------------
+BIND MOUNT
 
+stored specific directory instead of whole container
+SCENARIO :-
++--------------------------------------------------+
+| WEB                    deploy index.html         |
+|        nginx                                     |
++--------------------------------------------------+
+                         ^
+                         |  READ
+                         |
++--------------------------------------------------+
+| myvolume                                         |
+|           index.html                             |
++--------------------------------------------------+
+        ^
+        |  WRITE
+        |
++--------------------------------------------------+
+| /tmp                                             |
+|     index.html                                   |
+|                                                  |
+|  date >> index.html                              |
+|                                                  |
+|                         ubuntu container         |
++--------------------------------------------------+
+
+-> docker volume create myvol
+-> docker volume create myvol2
+-> docker volume inspect myvol		//PATH inspect
+-> cd PATH			// just to check
+-> ls
+--------------
+-> docker run -dit --name=data_cont -v myvol:/tmp ubuntu
+-> docker ps -a
+-> docker attach data_cont
+	| -> cd /tmp
+	| -> ls
+	| -> touch index.html
+	| -> date >> index.html
+	| -> date >> index.html	
+	|
+	|
+	|
+	|
+	| exit
+-> cd PATH
+-> cat index.html	
+
+-> docker run -d --name=web_content -p 8787:80 -v myvol:/usr/share/nginx/html nginx
+
+-> docker ps -a                     // web_content should be running
+-> Open in browser: PublicIP:8787   // shows the dates
 --++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
 --====================================================================--
