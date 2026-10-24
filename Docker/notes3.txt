@@ -1,0 +1,60 @@
+--====================================================================--
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+# Git + Docker
+Scenario :-
+-> You are provided with code repo for a web application on github.
+-> Deploy this code on a container of webserver apache2.
+-> Use the concept of volumes, port mappings & base image httpd for this use case.
+
+-> git clone URL
+-> cd ecomm
+-> ls 
+-> pwd
+-> docker run --name=myweb -d -P -v /root/ecomm:/usr/local/apache2/htdocs/ httpd// Change in the github UI
+   OR with manual-generated port:
+-> docker run --name=myweb -d -p 8080:80 -v /root/ecomm:/usr/local/apache2/htdocs/ httpd
+
+-> docker ps -a                     // myweb should be running
+                                    // PORTS column shows the port (e.g. 0.0.0.0:32768->80/tcp)
+-> Open in browser: PublicIP:generated port   // (or PublicIP:8080) shows the ecomm site
+
+// Change in the github UI
+-> git pull origin master           // (or main)
+-> Refresh browser                  // change appears, no container restart needed
+
+// Change in the github UI again
+-> git pull origin master
+-> Refresh browser                  // shows the new change again
+****************************************************************************************************
+Sceanrio :-
+ Create an image from a container and push to a repositroy(dockerhub)
+-> cd 
+-> ls
+-> docker rm -f $(docker ps -aq)	// to delete all the container
+-> docker run -it --name=cont1 ubuntu
+	| -> apt update && apt install git -y
+	| -> apt install python3 -y
+	| -> touch app.py
+	|
+	|
+	|
+	| -> exit
+-> docker ps -a
+-> docker commit cont1 myimage01		// create image from container
+-> docker images
+-> docker rm -f cont1				// deleted the cont1
+-> docker run -it --name=cont1 myimage01
+	| -> git --version                 // verify git is there	
+	| -> python3 --version
+	| -> ls                            // app.py should be present
+	| -> exit
+
+-> docker push myimage01	// error of login
+-> docker login -u username
+-> docker push myimage01
+-> docker tag myimage01 username/myimage01	// rename of image
+-> docker images
+-> docker push username/myimage01
+
+--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+--====================================================================--
