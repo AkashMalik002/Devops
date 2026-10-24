@@ -5,6 +5,7 @@ Scenario :-
 -> You are provided with code repo for a web application on github.
 -> Deploy this code on a container of webserver apache2.
 -> Use the concept of volumes, port mappings & base image httpd for this use case.
+-> Ex:- https://github.com/Sonal0409/ecomm.git
 
 -> git clone URL
 -> cd ecomm
