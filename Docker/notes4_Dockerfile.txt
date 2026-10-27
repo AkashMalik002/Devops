@@ -1,0 +1,126 @@
+--========================================================================================--
+--****************************************************************************************--
+DOCKERFILE ->
+-----------
+• Text file
+• No extension
+• Name is dockerfile / Dockerfile
+• No coding language required
+• Syntax:
+    -> Keyword argument / commands
+
+FLOW ->
+-----
+It will create an image.
+Dockerfile → (Build) → IMAGE → (RUN) → CONTAINER
+###################################################
+DOCKERFILE -> KEYWORDS
+--------------
+FROM: Using the keyword we will write the name of the base image over which we need to do customization. This is always the first keyword.
+ENV: Using this keyword we can set an environment variable and its value in the Dockerfile.
+RUN: Using this we will write commands to install/upgrade packages on the container.
+• Using this we can write any Linux commands which should be pre-executed on the container.
+• This keyword can be repeated multiple times in the Dockerfile.
+COPY: Using this keyword we can copy files/directories from our Docker host machine/local machine to the container directory.
+• Cannot copy compressed files on container.
+• Cannot download files from web URL to container directory.
+ADD: Using this keyword we can copy files/directories from our Docker host machine to the container directory.
+• Can also extract the files from TAR (compressed files) and copy onto container directory.
+• Can also download files from URL to container directory.
+EXPOSE: Using this keyword we will write the port number where the application will be accessed on the container.
+CMD: Using the keyword we will mention the argument/command that will be executed.
+
+###################################################
+IN ubuntu server login 
+-> mkdir mydockerfiles		// create working folder
+-> cd mydockerfiles
+-> vim index.html		// web page to be served
+        | <h1>Hello from Docker</h1>
+	|
+	|
+	|
+
+-> vim dockerfile
+	| FROM ubuntu				// base image
+	| LABEL maintainer="amnddomaintest"	// image author info
+	| ENV pkg_name=nginx			// variable (no spaces around =)
+	| RUN apt update			// runs at build time
+	| RUN apt install ${pkg_name} -y	// install nginx using variable OR RUN apt-get update && apt-get install -y ${pkg_name}
+	| COPY index.html /var/www/html/	// copy page into nginx web root
+	| EXPOSE 80				// port nginx listens on
+	| CMD ["nginx","-g","daemon off;"]	// run nginx in foreground
+
+-> docker build -t myimagenginx .			// build image (. = current folder)
+-> docker images					// list images
+-> docker history myimagenginx				// show layers of image
+-> docker run -d -p 8989:80 --name=web myimagenginx	// -d background, host 8989 -> container 80
+-> PublicIP:8989					// open in browser (port 8989 must be open in firewall/SG)
+
+=========== PART 2 : DEMO ===========
+-> cd
+-> mkdir mydemo
+-> cd mydemo
+-> vim dockerfile
+	| FROM ubuntu
+	| CMD ["ls"]					// container runs ls and exits
+
+-> docker build -t myimage01 .
+-> docker run myimage01					// prints files, then container stops
+-> docker ps -a						// shows container in Exited state
+-> docker run myimage01 uname				
+-> docker ps -a
+
+=========== PART 3 : ENTRYPOINT DEMO ===========
+-> vim dockerfile
+	| FROM ubuntu
+	| ENTRYPOINT ["ls"]				// fixed command, always runs
+
+-> docker build -t myimage02 .				// build image
+-> docker run myimage02					// run ls, lists root folder
+-> docker ps -a						// container in Exited state
+-> docker run myimage02 -al				// -al is added after ls, so it runs: ls -al
+-> docker ps -a
+-> docker run myimage02 uname				// error: runs "ls uname", no such file
+
+=========== PART 4 : ENTRYPOINT + CMD DEMO ===========
+-> vim dockerfile
+	| FROM ubuntu
+	| ENTRYPOINT ["ls"]				// fixed command
+	| CMD ["-altr"]					// default argument, can be overridden
+
+-> docker rm -f $(docker ps -aq)			// delete all containers (-q gives only IDs)
+-> docker build -t myimage03 .
+-> docker run myimage03					// runs: ls -altr (default CMD used)
+-> docker run myimage03 -al				// CMD replaced, runs: ls -al
+-> docker ps -a
+-> docker run myimage03 ls -al				// error: runs "ls ls -al", no such file "ls"
+
+=========== PART 5 : BASH ENTRYPOINT DEMO ===========
+-> vim dockerfile
+	| FROM ubuntu
+	| ENTRYPOINT ["/bin/bash"]			// bash is the fixed command
+	| CMD ["-c","sleep 2"]				// default args: bash -c "sleep 2"
+-> docker build -t myimage04 .
+-> docker run myimage04					// runs bash -c "sleep 2", exits after 2 seconds
+-> docker ps -a						// shows Exited container
+
+-> docker run -d -P myimagenginx
+-> docker ps -a
+-> docker inspect ContainerID |grep labels
+-> docker inspect ContainerID
+
+=========== EXTRA : OVERRIDE ENTRYPOINT ===========
+
+-> docker run --entrypoint uname myimage02          // --entrypoint replaces the ENTRYPOINT itself
+-> docker run --entrypoint ls myimage03 -al         // works, because ENTRYPOINT is overridden
+
+
+=========== SUMMARY : CMD vs ENTRYPOINT ===========
+
+CMD         -> default command or arguments, fully replaced by anything after the image name
+ENTRYPOINT  -> fixed command, anything after the image name is added as arguments
+Both        -> ENTRYPOINT is the program, CMD supplies its default arguments
+Override    -> CMD by typing a new command; ENTRYPOINT only with --entrypoint
+
+--****************************************************************************************--
+--========================================================================================--
