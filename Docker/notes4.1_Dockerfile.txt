@@ -1,0 +1,101 @@
+--========================================================================================--
+--****************************************************************************************--
+-> Docker Files Demo's of some languages
+###############################################
+Git :- https://github.com/AkashMalik002/Docker_python.git
+
+Inside Ubuntu
+-> cd 									// go to home folder
+-> git clone https://github.com/AkashMalik002/Docker_python.git		// download project code
+-> cd Docker_python
+-> ls									// check files (app code + dockerfile)
+-> docker rm -f $(docker -ps -aq)					// delete all old containers
+-> docker system prune --all						// remove unused images, networks, cache (asks y/N)
+-> cat dockerfile							// read the dockerfile before building
+	| FROM ubuntu:20.04
+	| RUN apt update && apt install python3 -y && apt install python3-flask -y
+	| COPY app1.py /tmp
+	| EXPOSE 8080
+	| CMD ["python3", "/tmp/app1.py"]
+
+-> docker build -t myimagepy .						// build image from dockerfile
+-> docker run -d -P myimagepy						// -d background, -P maps app port to a random host port
+-> docker ps -a								/ note the host port, e.g. 0.0.0.0:32768->5000/tcp
+=> UI -> PublicIP:Port
+
+###############################################
+Git :- https://github.com/AkashMalik002/Docker_NodejsApp.git
+
+Inside Ubuntu
+-> cd 
+-> git clone https://github.com/AkashMalik002/Docker_NodejsApp.git
+-> cd Docker_NodejsApp
+-> ls
+-> docker rm -f $(docker -ps -aq)					// clean old containers
+-> docker system prune --all						// clean unused images and cache
+-> cat dockerfile
+	| FROM node
+	| WORKDIR /app
+	| COPY . /app
+	| RUN npm install
+	| EXPOSE 80
+	| CMD ["node", "server.js"]
+
+-> docker build -t myimagenode .					// image names must be lowercase
+-> docker images							// verify image is created
+-> docker run -d -P myimageNode						// random host port -> container port
+-> docker ps -a								// check running state and port
+=> UI -> PublicIP:Port
+
+###############################################
+Git :- https://github.com/AkashMalik002/Docker-Project-Python-Flask-app.git
+
+Inside Ubuntu
+-> cd 
+-> git clone https://github.com/AkashMalik002/Docker-Project-Python-Flask-app.git
+-> cd Docker-Project-Python-Flask-app
+-> ls
+-> docker rm -f $(docker -ps -aq)
+-> docker system prune --all
+-> cat Dockerfile
+	| FROM python:3.12-slim
+	| # Set working directory
+	| WORKDIR /app
+	| # Install dependencies
+	| COPY requirements.txt .
+	| RUN pip install --no-cache-dir -r requirements.txt
+	| # Copy app code
+	| COPY app.py .
+	| # Create volume mount point
+	| VOLUME ["/data"]
+	| # Expose port
+	| EXPOSE 5000 
+	| # Run app
+	| CMD ["python", "app.py"]
+
+-> docker build -t myimagepy01 .
+-> docker images
+-> docker run -d -P myimagepy01
+-> docker ps -a
+=> UI -> PublicIP:Port
+
+-> docker inspect contID						// full details of container: IP, ports, mounts, env
+=========== EXTRA : USEFUL COMMANDS FOR THESE DEMOS ===========
+
+-> docker port <contID>                             // show only the port mapping
+-> docker logs <contID>                             // see app output / errors if page does not open
+-> docker run -d -p 8080:5000 myimagepy             // fixed host port instead of random (-p host:container)
+-> docker stop <contID> && docker rm <contID>       // stop and remove one container
+
+
+=========== SUMMARY : -p vs -P ===========
+
+-p 8080:5000  -> you choose the host port (8080) and container port (5000)
+-P            -> Docker picks a random free host port for every EXPOSEd port in the Dockerfile
+
+
+############
+PENDING
+
+--****************************************************************************************--
+--========================================================================================--
