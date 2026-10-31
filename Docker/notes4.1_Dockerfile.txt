@@ -3,6 +3,18 @@
 -> Docker Files Demo's of some languages
 ###############################################
 Git :- https://github.com/AkashMalik002/Docker_python.git
++------------------------------------------+
+|  CONTAINER                               |
+|  +------------------------------------+  |
+|  |  /app                              |  |  // WORKDIR
+|  +------------------------------------+  |
+|  |  code                              |  |  // COPY . /app  (app.py)
+|  +------------------------------------+  |
+|  |  python                            |  |  // Python runtime + pip
+|  +------------------------------------+  |
+|  |  OS                                |  |  // base image layer
+|  +------------------------------------+  |
++------------------------------------------+
 
 Inside Ubuntu
 -> cd 									// go to home folder
@@ -25,6 +37,20 @@ Inside Ubuntu
 
 ###############################################
 Git :- https://github.com/AkashMalik002/Docker_NodejsApp.git
++------------------------------------------+
+|  CONTAINER                               |
+|  +------------------------------------+  |
+|  |  /app                              |  |  // WORKDIR, folder inside container
+|  +------------------------------------+  |
+|  |  code                              |  |  // COPY . /app  (app.js, package.json)
+|  +------------------------------------+  |
+|  |  node                              |  |  // Node.js runtime + npm
+|  +------------------------------------+  |
+|  |  OS                                |  |  // base image layer (ubuntu / alpine)
+|  +------------------------------------+  |
++------------------------------------------+
+        ^
+        |  Host OS kernel is shared. The container has no kernel of its own.
 
 Inside Ubuntu
 -> cd 
@@ -49,6 +75,18 @@ Inside Ubuntu
 
 ###############################################
 Git :- https://github.com/AkashMalik002/Docker-Project-Python-Flask-app.git
++------------------------------------------+
+|  CONTAINER                               |
+|  +------------------------------------+  |
+|  |  /app                              |  |  // WORKDIR
+|  +------------------------------------+  |
+|  |  code                              |  |  // app.py, templates/, requirements.txt
+|  +------------------------------------+  |
+|  |  flask + python                    |  |  // pip install flask on top of python
+|  +------------------------------------+  |
+|  |  OS                                |  |  // base image layer
+|  +------------------------------------+  |
++------------------------------------------+
 
 Inside Ubuntu
 -> cd 
