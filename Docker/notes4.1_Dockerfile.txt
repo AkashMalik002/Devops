@@ -132,8 +132,165 @@ Inside Ubuntu
 -P            -> Docker picks a random free host port for every EXPOSEd port in the Dockerfile
 
 
-############
-PENDING
+##################################
+MultiStage Dockerfile => 
+###############################################
+Git :- https://github.com/AkashMalik002/Docker-multistagebuild-GoLang.git
 
+Inside Ubuntu
+-> cd 
+-> docker rm -f $(docker -ps -aq)					// delete all old containers
+-> docker system prune --all						// remove unused images, networks, cache (asks y/N)
+-> git clone https://github.com/AkashMalik002/Docker-multistagebuild-GoLang.git
+-> ls
+
+-> mv Dockerfile Dockerfile-next
+-> mv nomultistagedockerfile Dockerfile
+-> cat Dockerfile
+	| FROM ubuntu AS build
+	| RUN apt-get update && apt-get install -y golang-go
+	| ENV GO111MODULE=off
+	| COPY . .
+	| RUN CGO_ENABLED=0 go build -o /app .
+	| ENTRYPOINT ["/app"]
+
+-> docker build -t myimage01 .
+-> docker images
+-> ls Dockerfile nomultistagedockerfile
+-> mv Dockerfile-next Dockerfile
+-> cat Dockerfile
+	| FROM ubuntu AS build
+	| RUN apt-get update && apt-get install -y golang-go
+	|  ENV GO111MODULE=off
+	| COPY . .
+	| RUN CGO_ENABLED=0 go build -o /app .
+	|
+	| FROM scratch
+	| # Copy the compiled binary from the build stage
+	| COPY --from=build /app /app
+	| # Set the entrypoint for the container to run the binary
+	| ENTRYPOINT ["/app"]
+
+-> docker builf -t myimage02 .
+-> docker images
+-> -> docker run -d -P myimage02
+-> docker ps -a
+=> UI -> PublicIP:Port
+
+###############################################
+(**)Git :- https://github.com/AkashMalik002/Docker-Stack-VotingApp.git(**)
+
+Inside Ubuntu
+-------------------------
+NOtes:- We are creating images only 
+-------------------------
+-> cd 
+-> docker rm -f $(docker -ps -aq)					// delete all old containers
+-> docker system prune --all						// remove unused images, networks, cache (asks y/N)
+-> git clone https://github.com/AkashMalik002/Docker-Stack-VotingApp.git
+-> ls
+
+-> cd example-voting-app
+-> ls
+-> cd worker
+-> ls
+-> cat Dockerfile
+	| FROM mcr.microsoft.com/dotnet/sdk:7.0 as build
+	| WORKDIR /App
+	|COPY . /app
+	| #RUN dotnet restore / publish -c release -o out
+	| RUN dotnet publish -c release -o out
+	| # app image
+	|FROM mcr.microsoft.com/dotnet/runtime:7.0
+	| WORKDIR /app
+	| COPY --from=build /App/out .
+	| ENTRYPOINT ["dotnet", "Worker.dll"]
+
+-> docker build -t workerimage .
+-> docker images
+-> docker history workerimage
+-> docker system prune --all
+
+-> cd ..
+-> cd result
+-> cat Dockerfile
+	| FROM node:18-slim
+	| # add curl for healthcheck
+	| RUN apt-get update && apt-get install -y --no-install-recommends curl tini && rm -rf /var/lib/apt/lists/*
+	| WORKDIR /usr/local/app
+	| # have nodemon available for local dev use (file watching)
+	| RUN npm install -g nodemon
+	| COPY package*.json ./
+	| RUN npm ci && npm cache clean --force && mv /usr/local/app/node_modules /node_modules
+	| COPY . .
+	| ENV PORT 80
+	| EXPOSE 80
+	| ENTRYPOINT ["/usr/bin/tini", "--"]
+	| CMD ["node", "server.js"]
+
+-> cd ..
+-> cd vote
+-> cat Dockerfile
+	# Define a base stage that uses the official python runtime base image
+	FROM python:3.11-slim AS base
+	# Add curl for healthcheck
+	RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+	# Set the application directory
+	WORKDIR /usr/local/app
+	# Install our requirements.txt
+	COPY requirements.txt ./requirements.txt
+	RUN pip install --no-cache-dir -r requirements.txt
+	# Define a stage specifically for development, where it'll watch for
+	# filesystem changes
+	FROM base AS dev
+	RUN pip install watchdog
+	ENV FLASK_ENV=development
+	CMD ["python", "app.py"]
+	# Define the final stage that will bundle the application for production
+	FROM base AS final
+	# Copy our code from the current folder to the working directory inside the container
+	COPY . .
+	# Make port 80 available for links and/or publish
+	EXPOSE 80
+	# Define our command to be run when launching the container
+	CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers", "4", "--keep-alive", "0"]
+
+┌───────────────────────── FRONTEND ─────────────────────────┐
+│                                                            │
+│   ┌─────────────────────┐                                  │
+│   │     Voting app      │                                  │
+│   │   python  :5000     │                                  │
+│   └──────────┬──────────┘                                  │
+│              │ stores votes                                │
+│              ▼                                             │
+│   ┌─────────────────────┐                                  │
+│   │      Redis DB       │                                  │
+│   └──────────┬──────────┘                                  │
+│                                                            │
+└──────────────┼─────────────────────────────────────────────┘
+               │
+               ▼
+     ┌───────────────────┐
+     │    WORKER APP     │
+     │  .net app         │
+     │  (build image)    │
+     └─────────┬─────────┘
+               │
+               ▼
+┌──────────────┼────────── BACKEND ──────────────────────────┐
+│                                                            │
+│   ┌─────────────────────┐                                  │
+│   │     Postgres DB     │                                  │
+│   └──────────┬──────────┘                                  │
+│              │                                             │
+│              ▼                                             │
+│   ┌─────────────────────┐                                  │
+│   │    Voting Result    │                                  │
+│   │   nodejs  :5001     │                                  │
+│   └─────────────────────┘                                  │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
+
+Notes => All the docker files will be in separete folder.
 --****************************************************************************************--
 --========================================================================================--
