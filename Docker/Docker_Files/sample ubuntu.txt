@@ -1,0 +1,22 @@
+
+FROM ubuntu
+CMD ["ls"]					// container runs ls and exits
+
+--============================================--
+
+FROM ubuntu
+ENTRYPOINT ["ls"]				// fixed command, always runs
+
+--==============================================--
+
+FROM ubuntu
+ENTRYPOINT ["ls"]				// fixed command
+CMD ["-altr"]					// default argument, can be overridden
+
+--==============================================--
+
+FROM ubuntu
+ENTRYPOINT ["/bin/bash"]			// bash is the fixed command
+CMD ["-c","sleep 2"]				// default args: bash -c "sleep 2"
+
+--==============================================--

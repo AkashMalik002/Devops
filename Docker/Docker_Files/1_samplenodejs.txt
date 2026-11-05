@@ -1,0 +1,8 @@
+https://github.com/AkashMalik002/Docker_NodejsApp.git
+
+FROM node
+WORKDIR /app
+COPY . /app
+RUN npm install
+EXPOSE 80
+CMD ["node", "server.js"]

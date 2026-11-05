@@ -1,0 +1,9 @@
+
+FROM ubuntu				// base image
+LABEL maintainer="amnddomaintest"	// image author info
+ENV pkg_name=nginx			// variable (no spaces around =)
+RUN apt update			// runs at build time
+RUN apt install ${pkg_name} -y	// install nginx using variable OR RUN apt-get update && apt-get install -y ${pkg_name}
+COPY index.html /var/www/html/	// copy page into nginx web root
+EXPOSE 80				// port nginx listens on
+CMD ["nginx","-g","daemon off;"]	// run nginx in foreground
